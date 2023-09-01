@@ -4,13 +4,15 @@
  */
 package clases;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author joses
  */
 public class Administrador extends Persona {
     
-    public static Alumno[] alumnos = new Alumno[100];
+    public static ArrayList<Alumno> alumnos = new ArrayList<>();
     
     public Administrador(String usuario, String password) {
         super(usuario, password);

@@ -4,14 +4,28 @@
  */
 package clases;
 
+import javax.swing.ImageIcon;
+
 /**
  *
  * @author joses
  */
 public class Alumno extends Persona {
+    
+    private ImageIcon foto;
 
-    public Alumno(int codigo, String nombre, String apellido, String correo, String genero, String usuario, String password) {
+    public Alumno(int codigo, String nombre, String apellido, String correo, String genero, String usuario, String password, ImageIcon foto) {
         super(codigo, nombre, apellido, correo, genero, usuario, password);
+        this.foto = foto;
     }
 
+    public ImageIcon getFoto() {
+        return foto;
+    }
+
+    public void setFoto(ImageIcon foto) {
+        this.foto = foto;
+    }
+
+    
 }
