@@ -5,6 +5,7 @@
 package pantallas;
 import clases.Administrador;
 import clases.Alumno;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author joses
@@ -29,6 +30,8 @@ public class MostrarUsuarios extends javax.swing.JFrame {
     private void initComponents() {
 
         jButton1 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tablaAlumnos = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -39,6 +42,19 @@ public class MostrarUsuarios extends javax.swing.JFrame {
             }
         });
 
+        tablaAlumnos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tablaAlumnos);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -46,14 +62,19 @@ public class MostrarUsuarios extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(287, Short.MAX_VALUE))
+                .addGap(71, 71, 71)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(187, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton1)
-                .addContainerGap(266, Short.MAX_VALUE))
+                .addContainerGap(355, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -67,14 +88,15 @@ public class MostrarUsuarios extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     public void mostrarUsuarios(){
-        
-        for(Alumno a: Administrador.alumnos){
-            System.out.println("El nombre del alumno es: " + a.getNombre());
-            System.out.println("El apellido del alumno es: " + a.getApellido());
-            System.out.println("El genero del alumno es: " + a.getGenero());
-            System.out.println("El correo del alumno es: " + a.getCorreo());
-            System.out.println("#########################################################");
+        String[] columnNames = {"Nombre", "Apellido", "Género", "Correo"};
+
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+
+        for (Alumno alumno : Administrador.getAlumnos()) {
+            Object[] rowData = {alumno.getNombre(), alumno.getApellido(), alumno.getGenero(), alumno.getCorreo()};
+            model.addRow(rowData);
         }
+        tablaAlumnos.setModel(model);
     }
     /**
      * @param args the command line arguments
@@ -113,5 +135,7 @@ public class MostrarUsuarios extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tablaAlumnos;
     // End of variables declaration//GEN-END:variables
 }

@@ -4,11 +4,13 @@
  */
 package clases;
 
+import java.io.Serializable;
+
 /**
  *
  * @author joses
  */
-public abstract class Persona {
+public abstract class Persona implements Serializable {
 
     private int codigo;
     private String nombre;
@@ -27,7 +29,15 @@ public abstract class Persona {
         this.usuario = usuario;
         this.password = password;
     }
-    
+
+    public Persona(int codigo, String nombre, String apellido, String correo, String genero) {
+        this.codigo = codigo;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.correo = correo;
+        this.genero = genero;
+    }
+
     public Persona(String usuario, String password) {
         this.usuario = usuario;
         this.password = password;

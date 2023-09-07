@@ -11,12 +11,16 @@ import javax.swing.ImageIcon;
  * @author joses
  */
 public class Alumno extends Persona {
-    
+
     private ImageIcon foto;
 
     public Alumno(int codigo, String nombre, String apellido, String correo, String genero, String usuario, String password, ImageIcon foto) {
         super(codigo, nombre, apellido, correo, genero, usuario, password);
         this.foto = foto;
+    }
+
+    public Alumno(int codigo, String nombre, String apellido, String correo, String genero) {
+        super(codigo, nombre, apellido, correo, genero);
     }
 
     public ImageIcon getFoto() {
@@ -27,5 +31,4 @@ public class Alumno extends Persona {
         this.foto = foto;
     }
 
-    
 }

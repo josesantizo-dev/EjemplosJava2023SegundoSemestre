@@ -7,6 +7,15 @@ package pantallas;
 import clases.Administrador;
 import clases.Alumno;
 import java.awt.Image;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -18,7 +27,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @author joses
  */
 public class AdministradorScreen extends javax.swing.JFrame {
-    
+
     ImageIcon fotoTemporal;
     MostrarUsuarios mostrarUsuariosScreen;
 
@@ -27,6 +36,20 @@ public class AdministradorScreen extends javax.swing.JFrame {
      */
     public AdministradorScreen() {
         initComponents();
+        this.recuperarAlumnos();
+    }
+
+    public void recuperarAlumnos() {
+        try {
+            FileInputStream fis = new FileInputStream("C:/alumnos.dat");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            ArrayList<Alumno> alumnos = (ArrayList<Alumno>) ois.readObject();
+            Administrador.setAlumnos(alumnos);
+            fis.close();
+            ois.close();
+        } catch (Exception e) {
+            System.out.println("Error al recuperar alumnos: " + e.getMessage());
+        }
     }
 
     /**
@@ -56,6 +79,7 @@ public class AdministradorScreen extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         imagenLabel = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -115,6 +139,13 @@ public class AdministradorScreen extends javax.swing.JFrame {
             }
         });
 
+        jButton4.setText("Cargar alumnos");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -148,7 +179,9 @@ public class AdministradorScreen extends javax.swing.JFrame {
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGap(270, 270, 270)
+                .addGap(53, 53, 53)
+                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(74, 74, 74)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -196,7 +229,8 @@ public class AdministradorScreen extends javax.swing.JFrame {
                 .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton3))
+                    .addComponent(jButton3)
+                    .addComponent(jButton4))
                 .addGap(35, 35, 35))
         );
 
@@ -225,19 +259,26 @@ public class AdministradorScreen extends javax.swing.JFrame {
         String usuarioUsuario = usuarioInput.getText();
         String passwordUsuario = passwordInput.getText();
 
-        try{
-            if(fotoTemporal != null){
-            Alumno nuevoAlumno = new Alumno(codigoUsuario, nombreUsuario, apellidoUsuario, correoUsuario, generoUsuario, usuarioUsuario, passwordUsuario, fotoTemporal);
-            Administrador.alumnos.add(nuevoAlumno);
-            JOptionPane.showMessageDialog(null,"Ingreso de alumno exitosamente");
-        }else{
-            JOptionPane.showMessageDialog(null,"Porfavor sube una imagen");
+        try {
+            if (fotoTemporal != null) {
+                Alumno nuevoAlumno = new Alumno(codigoUsuario, nombreUsuario, apellidoUsuario, correoUsuario, generoUsuario, usuarioUsuario, passwordUsuario, fotoTemporal);
+                Administrador.getAlumnos().add(nuevoAlumno);
+
+                FileOutputStream fos = new FileOutputStream("C:/alumnos.dat");
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(Administrador.getAlumnos());
+                fos.close();
+                oos.close();
+
+                JOptionPane.showMessageDialog(null, "Ingresó de alumno exitosamente");
+            } else {
+                JOptionPane.showMessageDialog(null, "Porfavor sube una imagen");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
         }
-        }catch(Exception e){
-            JOptionPane.showMessageDialog(null,e.getMessage());
-        }
-        
-        
+
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -245,10 +286,10 @@ public class AdministradorScreen extends javax.swing.JFrame {
         JFileChooser jFileChooser = new JFileChooser(); //Ventana para escojer nuestro archivo
         FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG,PNG", "jpg", "png");
         jFileChooser.setFileFilter(filter);
-        
+
         int respuestaFileChooser = jFileChooser.showOpenDialog(this);
-        
-        if(respuestaFileChooser == JFileChooser.APPROVE_OPTION){
+
+        if (respuestaFileChooser == JFileChooser.APPROVE_OPTION) {
             ruta = jFileChooser.getSelectedFile().getPath();
             Image imagen = new ImageIcon(ruta).getImage();
             ImageIcon icono = new ImageIcon(imagen.getScaledInstance(imagenLabel.getWidth(), imagenLabel.getHeight(), Image.SCALE_SMOOTH));
@@ -258,10 +299,58 @@ public class AdministradorScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-       this.setVisible(false);
-       mostrarUsuariosScreen = new MostrarUsuarios();
-       this.mostrarUsuariosScreen.setVisible(true);
+        this.setVisible(false);
+        mostrarUsuariosScreen = new MostrarUsuarios();
+        this.mostrarUsuariosScreen.setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos CSV (.csv)", "csv");
+        fileChooser.setFileFilter(filter);
+
+        int respuesta = fileChooser.showOpenDialog(null);
+
+        if (respuesta == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            try (BufferedReader br = new BufferedReader(new FileReader(selectedFile))) {
+                String linea;
+                while ((linea = br.readLine()) != null) {
+                    String[] fields = linea.split(";");
+
+                    if (fields.length > 1 && fields[0].equals("codigo")) {
+                        continue;
+                    }
+
+                    if (fields.length > 1) {
+
+                        int codigo = Integer.parseInt(fields[0]);
+                        String nombre = fields[1];
+                        String apellido = fields[2];
+                        String correo = fields[3];
+                        String genero = fields[4];
+
+                        Alumno nuevoAlumno = new Alumno(codigo, nombre, apellido, correo, genero);
+                        Administrador.getAlumnos().add(nuevoAlumno);
+
+                        FileOutputStream fos = new FileOutputStream("C:/alumnos.dat");
+                        ObjectOutputStream oos = new ObjectOutputStream(fos);
+                        oos.writeObject(Administrador.getAlumnos());
+                        fos.close();
+                        oos.close();
+
+                        for (String field : fields) {
+                            System.out.println(field + "\t");
+                        }
+                        System.out.println();
+                    }
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -309,6 +398,7 @@ public class AdministradorScreen extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
